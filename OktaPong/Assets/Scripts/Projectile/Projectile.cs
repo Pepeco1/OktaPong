@@ -12,8 +12,18 @@ public class Projectile : MovableObjectMono
 
     protected override void Move()
     {
-        Vector3 newPosition = transform.right * maxSpeed * Time.deltaTime;
+        var newPosition = transform.right * maxSpeed * Time.deltaTime;
+        transform.position += newPosition;
+    }
 
-        transform.Translate(newPosition);
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Bounce(collision.GetContact(0).normal);
+    }
+
+    private void Bounce(Vector2 collisionNormal)
+    {
+        var newDirection = Vector2.Reflect(transform.right, collisionNormal);
+        transform.right = newDirection;
     }
 }
