@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class MovableObjectMono : MonoBehaviour
 {
 
-    [SerializeField] protected Vector2 movement = new Vector2(10f, 10f);
+    [SerializeField] protected float maxSpeed = 10f;
     [SerializeField] protected float rotationVelocity = 100f;
 
     protected virtual void Rotate()

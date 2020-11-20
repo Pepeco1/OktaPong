@@ -25,7 +25,7 @@ public class Ship : MovableObjectMono
     {
         if (input.VerticalInput != 0)
         {
-            characterController.Move(new Vector3(0, input.VerticalInput * movement.y * Time.deltaTime, 0));
+            characterController.Move(new Vector3(0, input.VerticalInput * maxSpeed * Time.deltaTime, 0));
         }
     }
 
