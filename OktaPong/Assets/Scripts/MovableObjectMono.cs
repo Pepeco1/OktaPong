@@ -5,8 +5,11 @@ using UnityEngine;
 public abstract class MovableObjectMono : MonoBehaviour
 {
 
-    [SerializeField] protected float maxSpeed = 10f;
-    [SerializeField] protected float rotationVelocity = 100f;
+    [SerializeField] private float maxSpeed = 10f;
+    [SerializeField] private float rotationVelocity = 100f;
+
+    public float MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
+    public float RotationVelocity { get => rotationVelocity; set => rotationVelocity = value; }
 
     protected virtual void Rotate()
     {
