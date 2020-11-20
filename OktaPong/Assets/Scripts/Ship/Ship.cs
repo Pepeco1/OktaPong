@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ship : MonoBehaviour
+public class Ship : MovableObjectMono
 {
-
-    public float velocityVertical = 10f;
-    public float rotateVelocity = 100f;
 
     private InputProvider input = null;
     private CharacterController characterController = null;
@@ -20,14 +17,23 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(input.VerticalInput != 0)
-        {
-            characterController.Move(new Vector3(0, input.VerticalInput * velocityVertical * Time.deltaTime, 0));
-        }
+        Move();
+        Rotate();
+    }
 
-        if(input.HorizontalInput != 0)
+    protected override void Move()
+    {
+        if (input.VerticalInput != 0)
         {
-            transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * rotateVelocity * Time.deltaTime));
+            characterController.Move(new Vector3(0, input.VerticalInput * movement.y * Time.deltaTime, 0));
+        }
+    }
+
+    protected override void Rotate()
+    {
+        if (input.HorizontalInput != 0)
+        {
+            transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * rotationVelocity * Time.deltaTime));
         }
     }
 }
