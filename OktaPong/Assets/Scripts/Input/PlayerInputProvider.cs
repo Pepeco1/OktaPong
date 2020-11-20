@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInput : InputProvider
+public class PlayerInputProvider : InputProvider
 {
     public override void OnMove(InputAction.CallbackContext ctx)
     {
