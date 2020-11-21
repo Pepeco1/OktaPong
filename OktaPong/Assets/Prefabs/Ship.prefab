@@ -121,10 +121,11 @@ GameObject:
   - component: {fileID: 1526576202147639869}
   - component: {fileID: 3215443369366259251}
   - component: {fileID: 3631456704770087964}
+  - component: {fileID: 8362094872862448442}
   - component: {fileID: 5421998167598324928}
   m_Layer: 0
   m_Name: Ship
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -235,6 +236,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7a8e4702e10af4a834046f44deb4a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8362094872862448442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4376062071179284499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6614f69ada1430546b27991fdf677d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!114 &5421998167598324928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +263,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   rotationVelocity: 100
+  health: {fileID: 0}
+  projectilePool: {fileID: 0}
 --- !u!1 &4738088136421080721
 GameObject:
   m_ObjectHideFlags: 0

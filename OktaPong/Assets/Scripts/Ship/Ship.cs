@@ -8,6 +8,8 @@ public class Ship : MovableObjectMono
     private InputProvider input = null;
     private CharacterController characterController = null;
 
+    private Health health = null;
+
     [SerializeField] private ProjectilePool projectilePool = null;
 
     private List<Gun> gunList = null;
@@ -17,6 +19,7 @@ public class Ship : MovableObjectMono
         input = GetComponent<InputProvider>();
         characterController = GetComponent<CharacterController>();
         gunList = GetComponentsInChildren<Gun>().ToList();
+        health = GetComponent<Health>();
 
         InjectProjectilePoolInGuns();
     }
