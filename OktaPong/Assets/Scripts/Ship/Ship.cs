@@ -8,7 +8,6 @@ public class Ship : MovableObjectMono, IDamageable
 
 
     private InputProvider input = null;
-    private CharacterController characterController = null;
 
     private Health health = null;
 
@@ -20,7 +19,6 @@ public class Ship : MovableObjectMono, IDamageable
     private void Awake()
     {
         input = GetComponent<InputProvider>();
-        characterController = GetComponent<CharacterController>();
         gunList = GetComponentsInChildren<Gun>().ToList();
         health = GetComponent<Health>();
 
@@ -66,11 +64,30 @@ public class Ship : MovableObjectMono, IDamageable
         gunList.ForEach(gun => gun.Shoot());
     }
 
+    private bool CanMove(Vector2 direction, float distance, float yOffset)
+    {
+        var positionToCastRay = new Vector2(transform.position.x, transform.position.y + yOffset);
+        if(!Physics2D.Raycast(positionToCastRay, direction, distance))
+        {
+            return true;
+        }
+        return false;
+    }
+
     protected override void Move()
     {
         if (input.VerticalInput != 0)
         {
-            characterController.Move(new Vector3(0, input.VerticalInput * MaxSpeed * Time.deltaTime, 0));
+
+            float yOffset = 0f;
+            yOffset = input.VerticalInput < 0 ? -0.5f : 0.5f;
+
+            var direction = Vector2.up * input.VerticalInput;
+            var distance = MaxSpeed * Time.deltaTime;
+            if (CanMove(direction, distance, yOffset))
+            {
+                transform.position = (Vector2) transform.position + direction * distance;
+            }
         }
     }
 
