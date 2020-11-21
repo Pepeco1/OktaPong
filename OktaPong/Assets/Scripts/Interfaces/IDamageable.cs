@@ -1,8 +1,7 @@
 ﻿
-public interface IDamageable
+public interface IDamageable : IHaveHealth
 {
-    Health Health { get; set; }
-
     void TakeDamage(int amount);
     void Heal(int amount);
+
 }
