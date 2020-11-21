@@ -955,6 +955,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3215443369366259251, guid: 4b7f862362f0ac8468e25e5e375ee87e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4376062071179284499, guid: 4b7f862362f0ac8468e25e5e375ee87e,
         type: 3}
       propertyPath: m_Name
@@ -971,6 +976,16 @@ PrefabInstance:
       propertyPath: projectilePool
       value: 
       objectReference: {fileID: 124802705}
+    - target: {fileID: 5421998167598324928, guid: 4b7f862362f0ac8468e25e5e375ee87e,
+        type: 3}
+      propertyPath: health.maxHealth
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362094872862448442, guid: 4b7f862362f0ac8468e25e5e375ee87e,
+        type: 3}
+      propertyPath: maxHealth
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8799491203537020037, guid: 4b7f862362f0ac8468e25e5e375ee87e,
         type: 3}
       propertyPath: m_LocalPosition.x
