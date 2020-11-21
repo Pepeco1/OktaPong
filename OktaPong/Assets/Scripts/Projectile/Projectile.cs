@@ -7,6 +7,8 @@ public class Projectile : MovableObjectMono
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
     public UnityAction onCollide = null;
 
+    [SerializeField] private int projectileDamage = 10;
+    private int damageMultiplayer = 1;
     private ProjectilePool projectilePool = null;
 
     #region Unity functions
@@ -18,6 +20,11 @@ public class Projectile : MovableObjectMono
     protected void OnCollisionEnter2D(Collision2D collision)
     {
         Bounce(collision.GetContact(0).normal);
+
+        if (collision.collider.CompareTag("Player"))
+        {
+            collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
+        }
 
         onCollide?.Invoke();
     }
