@@ -2,8 +2,10 @@
 using System.Linq;
 using UnityEngine;
 
-public class Ship : MovableObjectMono
+public class Ship : MovableObjectMono, IDamageable
 {
+    public Health Health { get => health; set => health = value; }
+
 
     private InputProvider input = null;
     private CharacterController characterController = null;
@@ -13,6 +15,7 @@ public class Ship : MovableObjectMono
     [SerializeField] private ProjectilePool projectilePool = null;
 
     private List<Gun> gunList = null;
+
 
     private void Awake()
     {
@@ -35,6 +38,19 @@ public class Ship : MovableObjectMono
         Shoot();
         Move();
         Rotate();
+    }
+
+    public void TakeDamage(int amount)
+    {
+        Health.TakeDamage(amount);
+
+        //Spawn particles
+    }
+
+    public void Heal(int amount)
+    {
+        Health.Heal(amount);
+        //Spawn particles
     }
 
     private void Shoot()
@@ -65,4 +81,5 @@ public class Ship : MovableObjectMono
             transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
         }
     }
+
 }

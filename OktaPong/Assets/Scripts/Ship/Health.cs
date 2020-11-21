@@ -8,7 +8,6 @@ public class Health : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     private int currentHealth = 0;
 
-    private UnityAction onTakeDamage = null;
     private UnityAction onDeath = null;
 
     private void Awake()
@@ -27,7 +26,6 @@ public class Health : MonoBehaviour
             onDeath?.Invoke();
         }
 
-        onTakeDamage?.Invoke();
 
     }
 
