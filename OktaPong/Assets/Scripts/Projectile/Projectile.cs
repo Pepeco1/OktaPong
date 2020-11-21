@@ -3,8 +3,11 @@ using UnityEngine.Events;
 
 public class Projectile : MovableObjectMono
 {
-
+    
+    public ProjectilePool ProjectilePool { set => projectilePool = value; }
     public UnityAction onCollide = null;
+
+    private ProjectilePool projectilePool = null;
 
     #region Unity functions
     private void FixedUpdate()
