@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Ship : MovableObjectMono
@@ -8,17 +8,43 @@ public class Ship : MovableObjectMono
     private InputProvider input = null;
     private CharacterController characterController = null;
 
+    [SerializeField] private ProjectilePool projectilePool = null;
+
+    private List<Gun> gunList = null;
+
     private void Awake()
     {
         input = GetComponent<InputProvider>();
         characterController = GetComponent<CharacterController>();
+        gunList = GetComponentsInChildren<Gun>().ToList();
+
+        InjectProjectilePoolInGuns();
+    }
+
+    private void InjectProjectilePoolInGuns()
+    {
+        gunList.ForEach(gun => gun.ProjectilePool = projectilePool);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Shoot();
         Move();
         Rotate();
+    }
+
+    private void Shoot()
+    {
+        if(input.ShootInput == true)
+        {
+            ShootAllGuns();
+        }
+    }
+
+    private void ShootAllGuns()
+    {
+        gunList.ForEach(gun => gun.Shoot());
     }
 
     protected override void Move()

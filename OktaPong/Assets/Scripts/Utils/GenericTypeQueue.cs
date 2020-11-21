@@ -3,18 +3,14 @@ using UnityEngine;
 
 public class GenericTypeQueue<T> : MonoBehaviour where T : Component
 {
+    public T Prefab { get => prefab; set => prefab = value; }
 
     [SerializeField] private T prefab = null;
 
     private Queue<T> inactiveObjects = new Queue<T>();
 
-    
-    public GenericTypeQueue(T prefab)
-    {
-        this.prefab = prefab;
-    }
 
-    public T GetInstance()
+    public T Get()
     {
 
         if (inactiveObjects.Count <= 0)
