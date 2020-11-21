@@ -19,10 +19,11 @@ public class Health : MonoBehaviour
     {
         if((currentHealth - amount) > 0)
         {
-            ChangeHealth(amount);
+            ChangeHealth(-amount);
         }
         else
         {
+            ChangeHealth(-currentHealth);
             onDeath?.Invoke();
         }
 

@@ -119,7 +119,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8799491203537020037}
   - component: {fileID: 1526576202147639869}
-  - component: {fileID: 3215443369366259251}
   - component: {fileID: 3631456704770087964}
   - component: {fileID: 8362094872862448442}
   - component: {fileID: 5421998167598324928}
@@ -206,24 +205,6 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!143 &3215443369366259251
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4376062071179284499}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 1.19
-  m_Radius: 0.64
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3631456704770087964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,7 +244,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   rotationVelocity: 100
-  health: {fileID: 0}
   projectilePool: {fileID: 0}
 --- !u!1 &4738088136421080721
 GameObject:
