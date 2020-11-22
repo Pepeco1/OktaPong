@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputProvider : InputProvider
 {
+
+    public int ID = -1;
+
     public override void OnMove(InputAction.CallbackContext ctx)
     {
         Vector2 moveValue = ctx.ReadValue<Vector2>();
