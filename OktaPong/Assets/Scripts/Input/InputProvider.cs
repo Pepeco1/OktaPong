@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class InputProvider : MonoBehaviour, Controls.IGameplayActions
+public abstract class InputProvider : MonoBehaviour
 {
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
     public float VerticalInput { get => verticalInput; set => verticalInput = value; }
@@ -13,6 +13,6 @@ public abstract class InputProvider : MonoBehaviour, Controls.IGameplayActions
     protected bool shootInput = false;
 
 
-    public abstract void OnMove(InputAction.CallbackContext ctx);
-    public abstract void OnShoot(InputAction.CallbackContext ctx);
+    public abstract void OnMove(InputValue value);
+    public abstract void OnShoot(InputValue value);
 }

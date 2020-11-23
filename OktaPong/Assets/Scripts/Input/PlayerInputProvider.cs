@@ -6,17 +6,17 @@ public class PlayerInputProvider : InputProvider
 
     public int ID = -1;
 
-    public override void OnMove(InputAction.CallbackContext ctx)
+
+    public override void OnMove(InputValue value)
     {
-        Vector2 moveValue = ctx.ReadValue<Vector2>();
+        Vector2 moveValue = value.Get<Vector2>();
 
         horizontalInput = moveValue.x;
         verticalInput = moveValue.y;
     }
 
-    public override void OnShoot(InputAction.CallbackContext ctx)
+    public override void OnShoot(InputValue value)
     {
-        shootInput = ctx.ReadValue<float>() > 0.5;
+        shootInput = value.Get<float>() > 0.5;
     }
-
 }
