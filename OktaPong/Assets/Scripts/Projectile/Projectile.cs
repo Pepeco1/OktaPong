@@ -25,25 +25,27 @@ public class Projectile : MovableObjectMono
 
     private void Start()
     {
-        StartCoroutine(ProgrammedDeath());
+        //StartCoroutine(ProgrammedDeath());
     }
 
     private void FixedUpdate()
     {
+        CheckCollision();
         Move();
     }
 
-    protected void OnCollisionEnter2D(Collision2D collision)
-    {
-        Bounce(collision.GetContact(0).normal);
+    //protected void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Bounce(collision.GetContact(0).normal);
 
-        if (collision.collider.CompareTag("Player"))
-        {
-            collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
-        }
+    //    if (collision.collider.CompareTag("Player"))
+    //    {
+    //        collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
+    //    }
 
-        onCollide?.Invoke();
-    }
+    //    onCollide?.Invoke();
+    //}
+
     #endregion
 
     private IEnumerator ProgrammedDeath()
@@ -64,5 +66,18 @@ public class Projectile : MovableObjectMono
         var newDirection = Vector2.Reflect(transform.right, collisionNormal);
         transform.right = newDirection;
     }
+
+    private void CheckCollision()
+    {
+        var otherCollider = CheckOcurringCollision();
+
+        if (otherCollider == null)
+            return;
+
+        var hits = new RaycastHit2D[1];
+        collider.Raycast(otherCollider.ClosestPoint(transform.position), hits, MaxSpeed * Time.fixedDeltaTime);
+
+        Bounce(hits[0].normal);
+     }
 
 }
