@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
+
 public class InputConnector : MonoBehaviour
 {
     private void Awake()
@@ -14,12 +14,15 @@ public class InputConnector : MonoBehaviour
         // Finds the 
         var provider = providers.Find(prov => prov.ID == playerInput.playerIndex);
 
-        // TODO - Copy playerInput component to the provider's GO;
-        //ComponentUtils.CopyComponent(playerInput, provider.gameObject);
-        provider.gameObject.AddComponent<PlayerInput>();
-        var newComponent  = provider.gameObject.GetComponent<PlayerInput>();
-        ComponentUtils.GetCopyOf(newComponent, playerInput);
+        provider.transform.parent = this.transform;
+
+        //// TODO - Copy playerInput component to the provider's GO;
+        //provider.gameObject.AddComponent<PlayerInput>();
+        //var newComponent  = provider.gameObject.GetComponent<PlayerInput>();
+        //ComponentUtils.GetCopyOf(newComponent, playerInput);
+
+        //Destroy script
+        Destroy(this);
        
     }
-
 }

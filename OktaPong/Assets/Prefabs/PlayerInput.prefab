@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 21db12c65720ed04ea342286e8ed7c6d,
     type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 1
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -57,7 +57,15 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 703b2b4d-96f2-4703-a5c8-fbd1f63c2c4b
+    m_ActionName: Gameplay/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 682fc9b5-a821-48c3-b125-8d62c46e92fb
+    m_ActionName: Gameplay/Shoot[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
