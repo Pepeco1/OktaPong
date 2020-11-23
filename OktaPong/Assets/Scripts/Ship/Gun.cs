@@ -32,10 +32,12 @@ public class Gun : MonoBehaviour
         {
 
             var projectile = projectilePool.Get();
+
             projectile.ProjectilePool = projectilePool;
+            projectile.Ship = myShip;
+
             projectile.transform.rotation = transform.rotation;
             projectile.transform.position = gunTip.position;
-            projectile.Ship = myShip;
             projectile.gameObject.SetActive(true);
         
             nextShootTime = Time.time + shootDelay;
