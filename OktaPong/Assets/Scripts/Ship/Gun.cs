@@ -26,6 +26,7 @@ public class Gun : MonoBehaviour
     {
         if (CanShoot)
         {
+
             var projectile = projectilePool.Get();
             projectile.ProjectilePool = projectilePool;
             projectile.transform.rotation = transform.rotation;

@@ -1,19 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Ship : MovableObjectMono, IDamageable
 {
     public Health Health { get => health; set => health = value; }
+    public bool Permission { get => input.Permission;}
 
 
+    //Members
+    [SerializeField] private ProjectilePool projectilePool = null;
+    private List<Gun> gunList = null;
     private InputProvider input = null;
-
     private Health health = null;
 
-    [SerializeField] private ProjectilePool projectilePool = null;
-
-    private List<Gun> gunList = null;
+    // Events
+    public UnityAction onShoot = null;
 
 
     private void Awake()
@@ -33,6 +36,9 @@ public class Ship : MovableObjectMono, IDamageable
     // Update is called once per frame
     void Update()
     {
+        if (!Permission)
+            return;
+
         Shoot();
         Move();
         Rotate();
@@ -56,7 +62,9 @@ public class Ship : MovableObjectMono, IDamageable
         if(input.ShootInput == true)
         {
             ShootAllGuns();
+            input.onTurnChangeEvent?.Invoke();
         }
+
     }
 
     private void ShootAllGuns()

@@ -4,9 +4,6 @@ using UnityEngine.InputSystem;
 public class PlayerInputProvider : InputProvider
 {
 
-    public int ID = -1;
-
-
     public override void OnMove(InputValue value)
     {
         Vector2 moveValue = value.Get<Vector2>();

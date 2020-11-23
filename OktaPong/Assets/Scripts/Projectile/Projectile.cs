@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class Projectile : MovableObjectMono
@@ -29,6 +30,13 @@ public class Projectile : MovableObjectMono
         onCollide?.Invoke();
     }
     #endregion
+
+    private IEnumerator ProgrammedDeath()
+    {
+        yield return new WaitForSeconds(2f);
+
+        projectilePool.ReturnToPool(this);
+    }
 
     protected override void Move()
     {
