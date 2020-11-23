@@ -25,12 +25,18 @@ public class Ship : MovableObjectMono, IDamageable
         gunList = GetComponentsInChildren<Gun>().ToList();
         health = GetComponent<Health>();
 
-        InjectProjectilePoolInGuns();
+        InjectDependenciesInGuns();
     }
 
-    private void InjectProjectilePoolInGuns()
+    private void InjectDependenciesInGuns()
     {
-        gunList.ForEach(gun => gun.ProjectilePool = projectilePool);
+        gunList.ForEach(gun => InjectMembers(gun));
+
+        void InjectMembers(Gun gun)
+        {
+            gun.ProjectilePool = projectilePool;
+            gun.Ship = this;
+        }
     }
 
     // Update is called once per frame
@@ -62,12 +68,10 @@ public class Ship : MovableObjectMono, IDamageable
         if(input.ShootInput == true)
         {
             ShootAllGuns();
-            input.onTurnChangeEvent?.Invoke();
         }
-
     }
 
-    private void ShootAllGuns()
+    void ShootAllGuns()
     {
         gunList.ForEach(gun => gun.Shoot());
     }
@@ -105,6 +109,11 @@ public class Ship : MovableObjectMono, IDamageable
         {
             transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
         }
+    }
+
+    public void TriggerTurnChangeEvent()
+    {
+        input.TriggerTurnChangeEvent();
     }
 
 }

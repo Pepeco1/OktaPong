@@ -27,4 +27,8 @@ public abstract class InputProvider : MonoBehaviour
 
     public abstract void OnMove(InputValue value);
     public abstract void OnShoot(InputValue value);
+    public void TriggerTurnChangeEvent()
+    {
+        onTurnChangeEvent?.Invoke();
+    }
 }
