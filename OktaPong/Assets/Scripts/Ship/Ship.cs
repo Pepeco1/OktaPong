@@ -1,19 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Ship : MovableObjectMono, IDamageable
 {
     public Health Health { get => health; set => health = value; }
+    public bool Permission { get => input.Permission;}
 
 
+    //Members
+    [SerializeField] private ProjectilePool projectilePool = null;
+    private List<Gun> gunList = null;
     private InputProvider input = null;
-
     private Health health = null;
 
-    [SerializeField] private ProjectilePool projectilePool = null;
-
-    private List<Gun> gunList = null;
+    // Events
+    public UnityAction onShoot = null;
 
 
     private void Awake()
@@ -22,17 +25,26 @@ public class Ship : MovableObjectMono, IDamageable
         gunList = GetComponentsInChildren<Gun>().ToList();
         health = GetComponent<Health>();
 
-        InjectProjectilePoolInGuns();
+        InjectDependenciesInGuns();
     }
 
-    private void InjectProjectilePoolInGuns()
+    private void InjectDependenciesInGuns()
     {
-        gunList.ForEach(gun => gun.ProjectilePool = projectilePool);
+        gunList.ForEach(gun => InjectMembers(gun));
+
+        void InjectMembers(Gun gun)
+        {
+            gun.ProjectilePool = projectilePool;
+            gun.Ship = this;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!Permission)
+            return;
+
         Shoot();
         Move();
         Rotate();
@@ -59,7 +71,7 @@ public class Ship : MovableObjectMono, IDamageable
         }
     }
 
-    private void ShootAllGuns()
+    void ShootAllGuns()
     {
         gunList.ForEach(gun => gun.Shoot());
     }
@@ -97,6 +109,11 @@ public class Ship : MovableObjectMono, IDamageable
         {
             transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
         }
+    }
+
+    public void TriggerTurnChangeEvent()
+    {
+        input.TriggerTurnChangeEvent();
     }
 
 }

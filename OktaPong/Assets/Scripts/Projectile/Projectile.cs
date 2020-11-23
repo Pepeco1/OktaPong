@@ -1,17 +1,33 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class Projectile : MovableObjectMono
 {
     
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
+    public Ship Ship { set => myShip = value; }
+
+
+    //Events
     public UnityAction onCollide = null;
 
+    //Atributes
     [SerializeField] private int projectileDamage = 10;
     private int damageMultiplayer = 1;
+
+    //Members
     private ProjectilePool projectilePool = null;
+    private Ship myShip = null;
+
 
     #region Unity functions
+
+    private void Start()
+    {
+        StartCoroutine(ProgrammedDeath());
+    }
+
     private void FixedUpdate()
     {
         Move();
@@ -29,6 +45,13 @@ public class Projectile : MovableObjectMono
         onCollide?.Invoke();
     }
     #endregion
+
+    private IEnumerator ProgrammedDeath()
+    {
+        yield return new WaitForSeconds(2f);
+        myShip.TriggerTurnChangeEvent();
+        projectilePool.ReturnToPool(this);
+    }
 
     protected override void Move()
     {
