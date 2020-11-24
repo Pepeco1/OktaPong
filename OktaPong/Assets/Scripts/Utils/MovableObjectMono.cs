@@ -8,7 +8,6 @@ public abstract class MovableObjectMono : MonoBehaviour
     public float MaxSpeed { get => maxSpeed; set => maxSpeed = value; }
     public float RotationVelocity { get => rotationVelocity; set => rotationVelocity = value; }
 
-
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float rotationVelocity = 100f;
     private Vector2 direction = Vector2.right;
@@ -23,7 +22,7 @@ public abstract class MovableObjectMono : MonoBehaviour
 
     protected virtual void Rotate()
     {
-        transform.Rotate(new Vector3(0, 0, rotationVelocity * Time.deltaTime));
+        transform.Rotate(new Vector3(0, 0, rotationVelocity * Time.fixedDeltaTime));
     }
 
     protected abstract void Move();
@@ -31,17 +30,13 @@ public abstract class MovableObjectMono : MonoBehaviour
     protected Collider2D CheckOcurringCollision()
     {
 
-        var colliders = new Collider2D[5];
-        var filter = new ContactFilter2D();
-        if (collider.OverlapCollider(filter.NoFilter(), colliders) >= 1)
-            Debug.Log("Colidiu 2");
-
-
-
+        
+        var collidersHit = new Collider2D[10];
+        Cast(transform.forward * maxSpeed * Time.fixedDeltaTime * 100000, collidersHit);
 
         Collider2D closestCollider = null;
         float closestHitDistance = Mathf.Infinity;
-        foreach(var otherCollider in colliders)
+        foreach(var otherCollider in collidersHit)
         {
             if(otherCollider != null)
             {
@@ -56,6 +51,8 @@ public abstract class MovableObjectMono : MonoBehaviour
             }
         }
 
+        //if (closestCollider != null)
+        //    GetOffCollision(closestCollider);
 
         return closestCollider;
     }
@@ -63,9 +60,28 @@ public abstract class MovableObjectMono : MonoBehaviour
     private void GetOffCollision(Collider2D otherCollider)
     {
         var hits = new RaycastHit2D[1];
-        collider.Raycast(otherCollider.ClosestPoint(transform.position), hits, MaxSpeed * Time.fixedDeltaTime);
+        var dir = (Vector3) otherCollider.ClosestPoint(transform.position) - transform.position;
+        collider.Raycast(dir, hits, MaxSpeed * Time.fixedDeltaTime);
 
-        transform.position +=  (Vector3) hits[0].normal * maxSpeed * Time.fixedDeltaTime;
+
+        transform.position += (Vector3) hits[0].normal * maxSpeed * Time.fixedDeltaTime * 1.5f;
+        Physics2D.SyncTransforms();
+
+
+    }
+
+    private int Cast(Vector3 direction, Collider2D[] result)
+    {
+
+        transform.position += direction;
+        Physics2D.SyncTransforms();
+
+        var filter = new ContactFilter2D();
+        int collidersOverlaped = collider.OverlapCollider(filter.NoFilter(), result);
+
+        transform.position -= direction;
+        Physics2D.SyncTransforms();
+        return collidersOverlaped;
     }
 
 }
