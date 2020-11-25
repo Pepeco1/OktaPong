@@ -7,7 +7,11 @@ public class Ship : MovableObjectMono, IDamageable
 {
     public Health Health { get => health; set => health = value; }
     public bool Permission { get => input.Permission;}
+    public InputProvider InputProvider { get => input;}
+    public ShipFiliation Filiation { get => filiation; }
 
+    //Atributes
+    [SerializeField] private ShipFiliation filiation = ShipFiliation.Player1;
 
     //Members
     [SerializeField] private ProjectilePool projectilePool = null;
@@ -17,7 +21,11 @@ public class Ship : MovableObjectMono, IDamageable
 
     // Events
     public UnityAction onShoot = null;
+    public UnityAction onHit = null;
+    public UnityAction<ShipFiliation> onDeath = null;
 
+
+    #region Unity Functions
 
     private void Awake()
     {
@@ -28,16 +36,6 @@ public class Ship : MovableObjectMono, IDamageable
         InjectDependenciesInGuns();
     }
 
-    private void InjectDependenciesInGuns()
-    {
-        gunList.ForEach(gun => InjectMembers(gun));
-
-        void InjectMembers(Gun gun)
-        {
-            gun.ProjectilePool = projectilePool;
-            gun.Ship = this;
-        }
-    }
 
     // Update is called once per frame
     void Update()
@@ -50,6 +48,18 @@ public class Ship : MovableObjectMono, IDamageable
         Rotate();
     }
 
+    private void OnEnable()
+    {
+        SubscribeToEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribeToEvents();
+    }
+
+    #endregion
+
     public void TakeDamage(int amount)
     {
         Health.TakeDamage(amount);
@@ -61,6 +71,16 @@ public class Ship : MovableObjectMono, IDamageable
     {
         Health.Heal(amount);
         //Spawn particles
+    }
+    private void InjectDependenciesInGuns()
+    {
+        gunList.ForEach(gun => InjectMembers(gun));
+
+        void InjectMembers(Gun gun)
+        {
+            gun.ProjectilePool = projectilePool;
+            gun.Ship = this;
+        }
     }
 
     private void Shoot()
@@ -111,9 +131,32 @@ public class Ship : MovableObjectMono, IDamageable
         }
     }
 
+
+    #region Events
+    
     public void TriggerTurnChangeEvent()
     {
         input.TriggerTurnChangeEvent();
     }
 
+    public void TriggerOnHitEvent()
+    {
+        onHit?.Invoke();
+    }
+
+    private void Health_OnDeath()
+    {
+        onDeath?.Invoke(filiation);
+    }
+    
+    private void SubscribeToEvents()
+    {
+        health.onDeath += Health_OnDeath;
+    }
+
+    private void UnSubscribeToEvents()
+    {
+        health.onDeath -= Health_OnDeath;
+    }
+    #endregion
 }

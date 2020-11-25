@@ -40,6 +40,7 @@ public class Projectile : MovableObjectMono
         if (collision.collider.CompareTag("Player"))
         {
             collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
+            myShip.TriggerOnHitEvent();
         }
 
         onCollide?.Invoke();
