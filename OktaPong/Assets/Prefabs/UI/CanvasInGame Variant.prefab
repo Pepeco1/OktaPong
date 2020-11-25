@@ -120,7 +120,8 @@ PrefabInstance:
     - target: {fileID: 8036919497823757491, guid: 014d63575b6c99a44a8aa9e52d2b039e,
         type: 3}
       propertyPath: m_Name
-      value: CanvasInGame
+      value: CanvasInGame Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3272175604517543262, guid: 014d63575b6c99a44a8aa9e52d2b039e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 014d63575b6c99a44a8aa9e52d2b039e, type: 3}
