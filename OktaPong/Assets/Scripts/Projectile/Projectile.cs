@@ -23,7 +23,7 @@ public class Projectile : MovableObjectMono
 
     #region Unity functions
 
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(ProgrammedDeath());
     }

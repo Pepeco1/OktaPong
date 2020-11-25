@@ -11,11 +11,13 @@ public class InputConnector : MonoBehaviour
 
         var providers = FindObjectsOfType<PlayerInputProvider>().ToList();
 
-        // Finds the 
+        // Finds the correct provider
         var provider = providers.Find(prov => prov.ID == playerInput.playerIndex);
 
         if(provider != null)
             provider.transform.parent = this.transform;
+
+
 
         //// TODO - Copy playerInput component to the provider's GO;
         //provider.gameObject.AddComponent<PlayerInput>();
