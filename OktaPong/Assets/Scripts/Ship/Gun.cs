@@ -34,7 +34,8 @@ public class Gun : MonoBehaviour
             var projectile = projectilePool.Get();
 
             projectile.ProjectilePool = projectilePool;
-            projectile.Ship = myShip;
+
+            myShip.SubscribeToProjectile(projectile);
 
             projectile.transform.rotation = transform.rotation;
             projectile.transform.position = gunTip.position;

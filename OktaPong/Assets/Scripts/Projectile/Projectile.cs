@@ -6,11 +6,11 @@ public class Projectile : MovableObjectMono
 {
     
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
-    public Ship Ship { set => myShip = value; }
+    public UnityAction OnCollide { get => onCollide; set => onCollide = value; }
+    public UnityAction OnDealDamage { get => onDealDamage; set => onDealDamage = value; }
+    public UnityAction OnKilledEnemy { get => onKill; set => onKill = value; }
 
 
-    //Events
-    public UnityAction onCollide = null;
 
     //Atributes
     [SerializeField] private int projectileDamage = 10;
@@ -18,8 +18,11 @@ public class Projectile : MovableObjectMono
 
     //Members
     private ProjectilePool projectilePool = null;
-    private Ship myShip = null;
 
+    //Events
+    private UnityAction onCollide = null;
+    private UnityAction onDealDamage = null;
+    private UnityAction onKill = null;
 
     #region Unity functions
 
@@ -39,25 +42,30 @@ public class Projectile : MovableObjectMono
 
         if (collision.collider.CompareTag("Player"))
         {
-            collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
-            myShip.TriggerOnHitEvent();
+            var enemy = collision.collider.GetComponent<IDamageable>();
+            bool killedEnemy = enemy.TakeDamage(projectileDamage * damageMultiplayer);
+
+            if (killedEnemy)
+            {
+                onKill?.Invoke();
+            }
+            
+            onDealDamage?.Invoke();
+
+            ClearEvents();
+            projectilePool.ReturnToPool(this);
         }
 
         onCollide?.Invoke();
     }
     #endregion
 
+    #region private methods
+
     private IEnumerator ProgrammedDeath()
     {
         yield return new WaitForSeconds(2f);
-        myShip.TriggerTurnChangeEvent();
         projectilePool.ReturnToPool(this);
-    }
-
-    protected override void Move()
-    {
-        var newPosition = transform.right * MaxSpeed * Time.deltaTime;
-        transform.position += newPosition;
     }
 
     private void Bounce(Vector2 collisionNormal)
@@ -65,5 +73,23 @@ public class Projectile : MovableObjectMono
         var newDirection = Vector2.Reflect(transform.right, collisionNormal);
         transform.right = newDirection;
     }
+
+    private void ClearEvents()
+    {
+        onCollide = null;
+        onDealDamage = null;
+        onKill = null;
+    }
+
+    #endregion
+
+    #region override methods
+    protected override void Move()
+    {
+        var newPosition = transform.right * MaxSpeed * Time.deltaTime;
+        transform.position += newPosition;
+    }
+
+    #endregion
 
 }

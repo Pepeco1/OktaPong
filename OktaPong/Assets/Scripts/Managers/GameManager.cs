@@ -6,26 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMono<GameManager>
 {
+    public UnityAction<Filiation> OnShipDeath { get => onUpdateScoreEvent; set => onUpdateScoreEvent = value; }
 
-    List<Ship> shipsInGame = null;
-
-    public UnityAction<ShipFiliation> onShipDeath = null;
-
+    
+    //Events
+    private UnityAction<Filiation> onUpdateScoreEvent = null;
 
     #region Unity Functions
-    private void Awake()
-    {
-        shipsInGame = FindObjectsOfType<Ship>().ToList();
-    }
 
     private void OnEnable()
     {
-        SubscribeToEvents();
+        //SubscribeToEvents();
     }
 
     private void OnDisable()
     {
-        UnsubscribeToEvents();
+        //UnsubscribeToEvents();
     }
 
     #endregion
@@ -43,25 +39,10 @@ public class GameManager : SingletonMono<GameManager>
 
     #region Events related functions
     
-    private void SubscribeToEvents()
-    {
-        foreach (var ship in shipsInGame)
-        {
-            ship.onDeath += Ship_OnDeath;
-        }
-    }
 
-    private void UnsubscribeToEvents()
+    private void Ship_OnDeath(Filiation filiation)
     {
-        foreach (var ship in shipsInGame)
-        {
-            ship.onDeath -= Ship_OnDeath;
-        }
-    }
-
-    private void Ship_OnDeath(ShipFiliation filiation)
-    {
-        onShipDeath?.Invoke(filiation);
+        OnShipDeath?.Invoke(filiation);
     }
 
     #endregion
