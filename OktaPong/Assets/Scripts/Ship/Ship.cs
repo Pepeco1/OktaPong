@@ -35,8 +35,10 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
 
     #region Unity Functions
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
+
         input = GetComponent<InputProvider>();
         gunList = GetComponentsInChildren<Gun>().ToList();
         health = GetComponent<Health>();
@@ -110,13 +112,21 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         gunList.ForEach(gun => gun.Shoot());
     }
 
-    private bool CanMove(Vector2 direction, float distance, float yOffset)
+    private bool CanMove(Vector2 direction, float distance)
     {
-        var positionToCastRay = new Vector2(transform.position.x, transform.position.y + yOffset);
-        if (!Physics2D.Raycast(positionToCastRay, direction, distance))
+        var positionToCastRay = new Vector2(transform.position.x, transform.position.y);
+
+        ContactFilter2D contact = new ContactFilter2D();
+        var layer = Physics2D.DefaultRaycastLayers & ~LayerMask.GetMask("Player");
+        contact.layerMask = layer;
+
+        var hits = new RaycastHit2D[3];
+        if (collider.Raycast(direction, hits, distance) <= 0)
         {
             return true;
         }
+
+        Debug.Log(hits[0].collider?.gameObject.name);
         return false;
     }
 
@@ -128,12 +138,11 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         if (input.VerticalInput != 0)
         {
 
-            float yOffset = 0f;
-            yOffset = input.VerticalInput < 0 ? -0.5f : 0.5f;
+            float yOffset = collider.bounds.extents.y;
 
             var direction = Vector2.up * input.VerticalInput;
             var distance = MaxSpeed * Time.deltaTime;
-            if (CanMove(direction, distance, yOffset))
+            if (CanMove(direction, distance + yOffset))
             {
                 transform.position = (Vector2) transform.position + direction * distance;
             }

@@ -99,13 +99,35 @@ public class Projectile : MovableObjectMono
         if (otherCollider == null)
             return;
 
-        Debug.Log("Colidiu");
         var hits = new RaycastHit2D[1];
         var dir = (Vector3) otherCollider.ClosestPoint(transform.position) - transform.position;
         collider.Raycast(dir, hits, MaxSpeed * Time.fixedDeltaTime * 4f);
 
+        TryCollisionWithDamageable(hits[0].collider);
+
         //Debug.Log(hits[0].normal);
         Bounce(hits[0].normal);
-     }
+    }
+
+    private void TryCollisionWithDamageable(Collider2D other)
+    {
+        var damageable = other.GetComponent<IDamageable>();
+
+        if (damageable == null)
+            return;
+
+        bool killed = damageable.TakeDamage(projectileDamage * damageMultiplayer);
+
+        if (killed)
+        {
+            onKill?.Invoke();
+        }
+
+        onDealDamage?.Invoke();
+
+        ClearEvents();
+        projectilePool.ReturnToPool(this);
+    }
+
 
 }

@@ -13,7 +13,7 @@ public abstract class MovableObjectMono : MonoBehaviour
     private Vector2 direction = Vector2.right;
 
     //Members
-    public new Collider2D collider = null;
+    [HideInInspector] protected new Collider2D collider = null;
 
     protected void Awake()
     {
