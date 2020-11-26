@@ -29,36 +29,35 @@ public class Projectile : MovableObjectMono
 
     private void OnEnable()
     {
-        StartCoroutine(ProgrammedDeath());
+        //StartCoroutine(ProgrammedDeath());
     }
 
     private void FixedUpdate()
     {
+        CheckCollision();
         Move();
     }
 
-    protected void OnCollisionEnter2D(Collision2D collision)
-    {
-        Bounce(collision.GetContact(0).normal);
+    //protected void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Bounce(collision.GetContact(0).normal);
 
-        if (collision.collider.CompareTag("Player"))
-        {
-            var enemy = collision.collider.GetComponent<IDamageable>();
-            bool killedEnemy = enemy.TakeDamage(projectileDamage * damageMultiplayer);
+        // if (collision.collider.CompareTag("Player"))
+        // {
+        //     var enemy = collision.collider.GetComponent<IDamageable>();
+        //     bool killedEnemy = enemy.TakeDamage(projectileDamage * damageMultiplayer);
 
-            if (killedEnemy)
-            {
-                onKill?.Invoke();
-            }
+        //     if (killedEnemy)
+        //     {
+        //         onKill?.Invoke();
+        //     }
             
-            onDealDamage?.Invoke();
+        //     onDealDamage?.Invoke();
 
-            ClearEvents();
-            projectilePool.ReturnToPool(this);
-        }
+        //     ClearEvents();
+        //     projectilePool.ReturnToPool(this);
+        // }
 
-        onCollide?.Invoke();
-    }
     #endregion
 
     #region private methods
@@ -87,10 +86,48 @@ public class Projectile : MovableObjectMono
     #region override methods
     protected override void Move()
     {
-        var newPosition = transform.right * MaxSpeed * Time.deltaTime;
+        var newPosition = transform.right * MaxSpeed * Time.fixedDeltaTime;
         transform.position += newPosition;
     }
 
     #endregion
+
+    private void CheckCollision()
+    {
+        var otherCollider = CheckOcurringCollision();
+
+        if (otherCollider == null)
+            return;
+
+        var hits = new RaycastHit2D[1];
+        var dir = (Vector3) otherCollider.ClosestPoint(transform.position) - transform.position;
+        collider.Raycast(dir, hits, MaxSpeed * Time.fixedDeltaTime * 4f);
+
+        TryCollisionWithDamageable(hits[0].collider);
+
+        //Debug.Log(hits[0].normal);
+        Bounce(hits[0].normal);
+    }
+
+    private void TryCollisionWithDamageable(Collider2D other)
+    {
+        var damageable = other.GetComponent<IDamageable>();
+
+        if (damageable == null)
+            return;
+
+        bool killed = damageable.TakeDamage(projectileDamage * damageMultiplayer);
+
+        if (killed)
+        {
+            onKill?.Invoke();
+        }
+
+        onDealDamage?.Invoke();
+
+        ClearEvents();
+        projectilePool.ReturnToPool(this);
+    }
+
 
 }
