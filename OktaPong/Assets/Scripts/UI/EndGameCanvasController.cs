@@ -12,4 +12,16 @@ public class EndGameCanvasController : CanvasController
     {
         textComponent.SetText(text);
     }
+
+    public void SetEndGameTextAccordingToWinner(Filiation winner)
+    {
+
+
+        if (winner == Filiation.Player1)
+            SetText("Player 1 wins");
+        else if (winner == Filiation.Player2)
+            SetText("Player 2 wins");
+        else
+            Debug.LogWarning("[EndGameCanvas] Filiation not supported by function");
+    }
 }
