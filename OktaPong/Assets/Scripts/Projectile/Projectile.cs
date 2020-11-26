@@ -16,7 +16,7 @@ public class Projectile : MovableObjectMono
 
     //Atributes
     [SerializeField] private int projectileDamage = 10;
-    [SerializeField] private float programmedDeath = 1.5f;
+    [SerializeField] private float programmedDeath = 4f;
     [SerializeField] private float bounciness = 1f;
     private float damageMultiplier = 1f;
 
@@ -31,7 +31,7 @@ public class Projectile : MovableObjectMono
 
     private void OnEnable()
     {
-        //StartCoroutine(ProgrammedDeath());
+        StartCoroutine(ProgrammedDeath());
     }
 
     private void FixedUpdate()
@@ -67,7 +67,7 @@ public class Projectile : MovableObjectMono
     private IEnumerator ProgrammedDeath()
     {
         yield return new WaitForSeconds(programmedDeath);
-        projectilePool.ReturnToPool(this);
+        ResetAndReturnToPool();
     }
 
     private void Bounce(Vector2 collisionNormal)
@@ -118,7 +118,7 @@ public class Projectile : MovableObjectMono
 
     private void TryCollisionWithDamageable(Collider2D other)
     {
-        var damageable = other.GetComponent<IDamageable>();
+        var damageable = other?.GetComponent<IDamageable>();
 
         if (damageable == null)
             return;
@@ -130,6 +130,12 @@ public class Projectile : MovableObjectMono
             onKill?.Invoke();
         }
 
+        ResetAndReturnToPool();
+    }
+
+    private void ResetAndReturnToPool()
+    {
+        TurnManager.Instance.NextTurn();
         ResetProjectile();
         projectilePool.ReturnToPool(this);
     }

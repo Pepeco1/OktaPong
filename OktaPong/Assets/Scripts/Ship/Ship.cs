@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, IScoreTrigger
 {
     public Health Health { get => health; set => health = value; }
-    public bool Permission { get => input.Permission; }
+    public bool Permission { get => input.Permission; set => input.Permission = value; }
     public InputProvider InputProvider { get => input; }
     public Filiation Filiation { get => filiation; }
     public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
@@ -101,7 +101,9 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         if (input.ShootInput == true)
         {
             ShootAllGuns();
-            input.TriggerTurnChangeEvent();
+
+            Permission = false;
+            //input.TriggerTurnChangeEvent();
         }
 
     }

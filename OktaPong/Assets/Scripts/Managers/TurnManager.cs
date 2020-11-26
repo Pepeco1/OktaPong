@@ -56,7 +56,7 @@ public class TurnManager : SingletonMono<TurnManager>
     }
 
 
-    private void NextTurn()
+    public void NextTurn()
     { 
         //Change to next Turn
         ChangeTurnToThis((idOfCurrent + 1) % gameParticipants.Count);

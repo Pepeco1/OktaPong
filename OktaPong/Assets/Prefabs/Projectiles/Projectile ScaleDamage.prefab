@@ -66,7 +66,7 @@ MonoBehaviour:
   maxSpeed: 10
   rotationVelocity: 100
   projectileDamage: 10
-  programmedDeath: 1.5
+  programmedDeath: 3
   bounciness: 1
 --- !u!114 &-2804549152632469615
 MonoBehaviour:
