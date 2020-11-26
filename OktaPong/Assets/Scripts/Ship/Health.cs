@@ -15,16 +15,18 @@ public class Health : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int amount)
+    public bool TakeDamage(int amount)
     {
         if((currentHealth - amount) > 0)
         {
             ChangeHealth(-amount);
+            return false;
         }
         else
         {
             ChangeHealth(-currentHealth);
             onDeath?.Invoke();
+            return true;
         }
 
 

@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class UIIngameCanvas : CanvasController
 {
-
-    List<UIScore> panelsList = null;
+    //Members
+    private List<IScoreTrigger> scoreTriggers = null;
+    private List<UIScore> panelsList = null;
 
     #region Unity Functions
     protected override void Awake()
     {
         base.Awake();
         panelsList = GetComponentsInChildren<UIScore>(true).ToList();
+        scoreTriggers = Utils.FindInterfacesOfType<IScoreTrigger>().ToList();
     }
 
     private void OnEnable()
@@ -31,19 +33,19 @@ public class UIIngameCanvas : CanvasController
 
     private void SubscribeToEvents()
     {
-        GameManager.Instance.onShipDeath += GameManager_OnShipDeath;
+        scoreTriggers.ForEach(trigger => trigger.OnScoreTrigger += ScoreTrigger_OnScoreTrigger);
     }
 
     private void UnSubscribeToEvents()
     {
-        GameManager.Instance.onShipDeath -= GameManager_OnShipDeath;
+        scoreTriggers.ForEach(trigger => trigger.OnScoreTrigger -= ScoreTrigger_OnScoreTrigger);   
     }
 
-    private void GameManager_OnShipDeath(ShipFiliation filiation)
+    private void ScoreTrigger_OnScoreTrigger(Filiation filiation)
     {
         foreach(var scorePanel in panelsList)
         {
-            if(scorePanel.ShipFiliation != filiation)
+            if(scorePanel.Filiation == filiation)
             {
                 scorePanel.IncrementScore();
             }

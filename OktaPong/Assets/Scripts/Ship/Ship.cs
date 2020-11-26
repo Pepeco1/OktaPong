@@ -3,15 +3,20 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Ship : MovableObjectMono, IDamageable
+public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, IScoreTrigger
 {
     public Health Health { get => health; set => health = value; }
-    public bool Permission { get => input.Permission;}
-    public InputProvider InputProvider { get => input;}
-    public ShipFiliation Filiation { get => filiation; }
+    public bool Permission { get => input.Permission; }
+    public InputProvider InputProvider { get => input; }
+    public Filiation Filiation { get => filiation; }
+    public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
+    public UnityAction OnHit { get => onHit; set => onHit = value; }
+    public UnityAction OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
+    public UnityAction OnDeath { get => onDeath; set => onDeath = value; }
+    public UnityAction<Filiation> OnScoreTrigger { get; set; }
 
     //Atributes
-    [SerializeField] private ShipFiliation filiation = ShipFiliation.Player1;
+    [SerializeField] private Filiation filiation = Filiation.Player1;
 
     //Members
     [SerializeField] private ProjectilePool projectilePool = null;
@@ -20,9 +25,10 @@ public class Ship : MovableObjectMono, IDamageable
     private Health health = null;
 
     // Events
-    public UnityAction onShoot = null;
-    public UnityAction onHit = null;
-    public UnityAction<ShipFiliation> onDeath = null;
+    private UnityAction onShoot = null;
+    private UnityAction onHit = null;
+    private UnityAction onKilledEnemy = null;
+    private UnityAction onDeath = null;
 
 
     #region Unity Functions
@@ -60,9 +66,10 @@ public class Ship : MovableObjectMono, IDamageable
 
     #endregion
 
-    public void TakeDamage(int amount)
+    #region public methods
+    public bool TakeDamage(int amount)
     {
-        Health.TakeDamage(amount);
+        return Health.TakeDamage(amount);
 
         //Spawn particles
     }
@@ -72,6 +79,9 @@ public class Ship : MovableObjectMono, IDamageable
         Health.Heal(amount);
         //Spawn particles
     }
+    #endregion
+
+    #region private functions
     private void InjectDependenciesInGuns()
     {
         gunList.ForEach(gun => InjectMembers(gun));
@@ -85,13 +95,13 @@ public class Ship : MovableObjectMono, IDamageable
 
     private void Shoot()
     {
-        if(input.ShootInput == true)
+        if (input.ShootInput == true)
         {
             ShootAllGuns();
         }
     }
 
-    void ShootAllGuns()
+    private void ShootAllGuns()
     {
         gunList.ForEach(gun => gun.Shoot());
     }
@@ -99,13 +109,16 @@ public class Ship : MovableObjectMono, IDamageable
     private bool CanMove(Vector2 direction, float distance, float yOffset)
     {
         var positionToCastRay = new Vector2(transform.position.x, transform.position.y + yOffset);
-        if(!Physics2D.Raycast(positionToCastRay, direction, distance))
+        if (!Physics2D.Raycast(positionToCastRay, direction, distance))
         {
             return true;
         }
         return false;
     }
 
+    #endregion
+
+    #region override methods
     protected override void Move()
     {
         if (input.VerticalInput != 0)
@@ -130,25 +143,37 @@ public class Ship : MovableObjectMono, IDamageable
             transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
         }
     }
-
+    #endregion
 
     #region Events
-    
+
+    public void SubscribeToProjectile(Projectile projectile)
+    {
+        projectile.OnDealDamage += Projectile_OnDealDamage;
+        projectile.OnKilledEnemy += Projectile_OnKillEnemy;
+    }
+
     public void TriggerTurnChangeEvent()
     {
         input.TriggerTurnChangeEvent();
     }
 
-    public void TriggerOnHitEvent()
-    {
-        onHit?.Invoke();
-    }
-
     private void Health_OnDeath()
     {
-        onDeath?.Invoke(filiation);
+        OnDeath?.Invoke();
     }
-    
+
+    private void Projectile_OnDealDamage()
+    {
+        OnHit?.Invoke();
+    }
+
+    private void Projectile_OnKillEnemy()
+    {
+        onKilledEnemy?.Invoke();
+        OnScoreTrigger?.Invoke(filiation);
+    }
+
     private void SubscribeToEvents()
     {
         health.onDeath += Health_OnDeath;
@@ -158,5 +183,6 @@ public class Ship : MovableObjectMono, IDamageable
     {
         health.onDeath -= Health_OnDeath;
     }
+
     #endregion
 }

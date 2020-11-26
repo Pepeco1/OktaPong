@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 3631456704770087964}
   - component: {fileID: 8362094872862448442}
   - component: {fileID: 5421998167598324928}
+  - component: {fileID: 2295352286955903632}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Player
@@ -155,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7a8e4702e10af4a834046f44deb4a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: -1
+  id: -1
 --- !u!114 &8362094872862448442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,7 +184,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   rotationVelocity: 100
+  filiation: 0
   projectilePool: {fileID: 0}
+--- !u!61 &2295352286955903632
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4376062071179284499}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &4738088136421080721
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,8 +305,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4224c02397f733042be219865c9ce5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunTip: {fileID: 4518479396311796207}
   shootDelay: 1
+  gunTip: {fileID: 4518479396311796207}
 --- !u!1 &6126275225598871392
 GameObject:
   m_ObjectHideFlags: 0

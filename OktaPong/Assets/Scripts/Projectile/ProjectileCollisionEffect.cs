@@ -13,12 +13,12 @@ public abstract class ProjectileCollisionEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        myProjectile.onCollide += Projectile_OnCollide;
+        myProjectile.OnCollide += Projectile_OnCollide;
     }
 
     private void OnDisable()
     {
-        myProjectile.onCollide -= Projectile_OnCollide;
+        myProjectile.OnCollide -= Projectile_OnCollide;
     }
 
     protected abstract void Projectile_OnCollide();
