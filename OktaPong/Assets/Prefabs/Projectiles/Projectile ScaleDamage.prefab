@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163a6a1e3d33f8d4f816bc3d4131ae1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleEffect: 1.25
+  scaleEffect: 0.2
 --- !u!1 &1274429332413870726
 GameObject:
   m_ObjectHideFlags: 0
