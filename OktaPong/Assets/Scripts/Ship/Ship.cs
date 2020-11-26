@@ -1,13 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Ship : MovableObjectMono, IDamageable
+public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, IScoreTrigger
 {
     public Health Health { get => health; set => health = value; }
-    public bool Permission { get => input.Permission;}
+    public bool Permission { get => input.Permission; }
+    public InputProvider InputProvider { get => input; }
+    public Filiation Filiation { get => filiation; }
+    public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
+    public UnityAction OnHit { get => onHit; set => onHit = value; }
 
+    public UnityAction OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
+    public UnityAction<Ship> OnDeath { get => onDeath; set => onDeath = value; }
+    public UnityAction<Filiation> OnScoreTrigger { get; set; }
+
+    //Atributes
+    [SerializeField] private Filiation filiation = Filiation.Player1;
 
     //Members
     [SerializeField] private ProjectilePool projectilePool = null;
@@ -16,8 +27,13 @@ public class Ship : MovableObjectMono, IDamageable
     private Health health = null;
 
     // Events
-    public UnityAction onShoot = null;
+    private UnityAction onShoot = null;
+    private UnityAction onHit = null;
+    private UnityAction onKilledEnemy = null;
+    private UnityAction<Ship> onDeath = null;
 
+
+    #region Unity Functions
 
     private void Awake()
     {
@@ -28,16 +44,6 @@ public class Ship : MovableObjectMono, IDamageable
         InjectDependenciesInGuns();
     }
 
-    private void InjectDependenciesInGuns()
-    {
-        gunList.ForEach(gun => InjectMembers(gun));
-
-        void InjectMembers(Gun gun)
-        {
-            gun.ProjectilePool = projectilePool;
-            gun.Ship = this;
-        }
-    }
 
     // Update is called once per frame
     void Update()
@@ -50,9 +56,22 @@ public class Ship : MovableObjectMono, IDamageable
         Rotate();
     }
 
-    public void TakeDamage(int amount)
+    private void OnEnable()
     {
-        Health.TakeDamage(amount);
+        SubscribeToEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribeToEvents();
+    }
+
+    #endregion
+
+    #region public methods
+    public bool TakeDamage(int amount)
+    {
+        return Health.TakeDamage(amount);
 
         //Spawn particles
     }
@@ -62,16 +81,31 @@ public class Ship : MovableObjectMono, IDamageable
         Health.Heal(amount);
         //Spawn particles
     }
+    #endregion
 
-    private void Shoot()
+    #region private functions
+    private void InjectDependenciesInGuns()
     {
-        if(input.ShootInput == true)
+        gunList.ForEach(gun => InjectMembers(gun));
+
+        void InjectMembers(Gun gun)
         {
-            ShootAllGuns();
+            gun.ProjectilePool = projectilePool;
+            gun.Ship = this;
         }
     }
 
-    void ShootAllGuns()
+    private void Shoot()
+    {
+        if (input.ShootInput == true)
+        {
+            ShootAllGuns();
+            input.TriggerTurnChangeEvent();
+        }
+
+    }
+
+    private void ShootAllGuns()
     {
         gunList.ForEach(gun => gun.Shoot());
     }
@@ -79,13 +113,16 @@ public class Ship : MovableObjectMono, IDamageable
     private bool CanMove(Vector2 direction, float distance, float yOffset)
     {
         var positionToCastRay = new Vector2(transform.position.x, transform.position.y + yOffset);
-        if(!Physics2D.Raycast(positionToCastRay, direction, distance))
+        if (!Physics2D.Raycast(positionToCastRay, direction, distance))
         {
             return true;
         }
         return false;
     }
 
+    #endregion
+
+    #region override methods
     protected override void Move()
     {
         if (input.VerticalInput != 0)
@@ -110,10 +147,46 @@ public class Ship : MovableObjectMono, IDamageable
             transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
         }
     }
+    #endregion
+
+    #region Events
+
+    public void SubscribeToProjectile(Projectile projectile)
+    {
+        projectile.OnDealDamage += Projectile_OnDealDamage;
+        projectile.OnKilledEnemy += Projectile_OnKillEnemy;
+    }
 
     public void TriggerTurnChangeEvent()
     {
         input.TriggerTurnChangeEvent();
     }
 
+    private void Health_OnDeath()
+    {
+        OnDeath?.Invoke(this);
+    }
+
+    private void Projectile_OnDealDamage()
+    {
+        OnHit?.Invoke();
+    }
+
+    private void Projectile_OnKillEnemy()
+    {
+        onKilledEnemy?.Invoke();
+        OnScoreTrigger?.Invoke(filiation);
+    }
+
+    private void SubscribeToEvents()
+    {
+        health.onDeath += Health_OnDeath;
+    }
+
+    private void UnSubscribeToEvents()
+    {
+        health.onDeath -= Health_OnDeath;
+    }
+
+    #endregion
 }

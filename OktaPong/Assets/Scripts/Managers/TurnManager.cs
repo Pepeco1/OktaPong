@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class TurnManager : MonoBehaviour
+public class TurnManager : SingletonMono<TurnManager>
 {
 
     private int idOfCurrent = -1;
 
     private List<InputProvider> gameParticipants = null;
+
+    public UnityAction onTurnChange = null;
 
     private void Awake()
     {
@@ -33,7 +36,7 @@ public class TurnManager : MonoBehaviour
         ChangeTurnToThis(0);
     }
 
-    private void ChangeTurnToThis(int id)
+    public void ChangeTurnToThis(int id)
     {
         gameParticipants.ForEach(provider => SetPermissionTrueIfSameID(provider));
 
@@ -57,6 +60,7 @@ public class TurnManager : MonoBehaviour
     { 
         //Change to next Turn
         ChangeTurnToThis((idOfCurrent + 1) % gameParticipants.Count);
+        onTurnChange?.Invoke();
     }
 
 

@@ -6,24 +6,28 @@ public class Projectile : MovableObjectMono
 {
     
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
-    public Ship Ship { set => myShip = value; }
+    public UnityAction OnCollide { get => onCollide; set => onCollide = value; }
+    public UnityAction OnDealDamage { get => onDealDamage; set => onDealDamage = value; }
+    public UnityAction OnKilledEnemy { get => onKill; set => onKill = value; }
 
 
-    //Events
-    public UnityAction onCollide = null;
 
     //Atributes
     [SerializeField] private int projectileDamage = 10;
+    [SerializeField] private float programmedDeath = 1.5f;
     private int damageMultiplayer = 1;
 
     //Members
     private ProjectilePool projectilePool = null;
-    private Ship myShip = null;
 
+    //Events
+    private UnityAction onCollide = null;
+    private UnityAction onDealDamage = null;
+    private UnityAction onKill = null;
 
     #region Unity functions
 
-    private void Start()
+    private void OnEnable()
     {
         //StartCoroutine(ProgrammedDeath());
     }
@@ -38,27 +42,30 @@ public class Projectile : MovableObjectMono
     //{
     //    Bounce(collision.GetContact(0).normal);
 
-    //    if (collision.collider.CompareTag("Player"))
-    //    {
-    //        collision.collider.GetComponent<IDamageable>().TakeDamage(projectileDamage * damageMultiplayer);
-    //    }
+        // if (collision.collider.CompareTag("Player"))
+        // {
+        //     var enemy = collision.collider.GetComponent<IDamageable>();
+        //     bool killedEnemy = enemy.TakeDamage(projectileDamage * damageMultiplayer);
 
-    //    onCollide?.Invoke();
-    //}
+        //     if (killedEnemy)
+        //     {
+        //         onKill?.Invoke();
+        //     }
+            
+        //     onDealDamage?.Invoke();
+
+        //     ClearEvents();
+        //     projectilePool.ReturnToPool(this);
+        // }
 
     #endregion
 
+    #region private methods
+
     private IEnumerator ProgrammedDeath()
     {
-        yield return new WaitForSeconds(2f);
-        myShip.TriggerTurnChangeEvent();
+        yield return new WaitForSeconds(programmedDeath);
         projectilePool.ReturnToPool(this);
-    }
-
-    protected override void Move()
-    {
-        var newPosition = transform.right * MaxSpeed * Time.fixedDeltaTime;
-        transform.position += newPosition;
     }
 
     private void Bounce(Vector2 collisionNormal)
@@ -66,6 +73,24 @@ public class Projectile : MovableObjectMono
         var newDirection = Vector2.Reflect(transform.right, collisionNormal);
         transform.right = newDirection;
     }
+
+    private void ClearEvents()
+    {
+        onCollide = null;
+        onDealDamage = null;
+        onKill = null;
+    }
+
+    #endregion
+
+    #region override methods
+    protected override void Move()
+    {
+        var newPosition = transform.right * MaxSpeed * Time.fixedDeltaTime;
+        transform.position += newPosition;
+    }
+
+    #endregion
 
     private void CheckCollision()
     {

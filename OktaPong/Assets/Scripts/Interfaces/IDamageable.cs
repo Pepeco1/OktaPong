@@ -1,7 +1,10 @@
 ﻿
+using UnityEngine.Events;
+
 public interface IDamageable : IHaveHealth
 {
-    void TakeDamage(int amount);
+    bool TakeDamage(int amount);
     void Heal(int amount);
+
 
 }
