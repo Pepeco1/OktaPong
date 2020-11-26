@@ -40,6 +40,13 @@ public class CanvasManager : SingletonMono<CanvasManager>
 
 
     }
+
+    public CanvasController GetControllerWithType(CanvasType type)
+    {
+        CanvasController controller;
+        controllersDic.TryGetValue(type, out controller);
+        return controller;
+    }
 }
 
 public enum CanvasType

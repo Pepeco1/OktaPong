@@ -8,12 +8,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : SingletonMono<GameManager>
 {
     public UnityAction<Filiation> OnShipDeath { get => onShipDead; set => onShipDead = value; }
-
+    public int PointsToWinGame { get => pointsToWinGame; set => pointsToWinGame = value; }
 
     //Atributes
+    [SerializeField] private int pointsToWinGame = 3;
+
     //Members
     private List<Ship> shipLists = null;
-    
+
     //Events
     private UnityAction<Filiation> onShipDead = null;
 
@@ -50,12 +52,41 @@ public class GameManager : SingletonMono<GameManager>
         Application.Quit();
     }
 
+    public void DoEndGame(Filiation winner)
+    {
+        TurnManager.Instance.ChangeTurnToThis(-1);
+
+        // Some visual feedback?
+
+        SetEndGameTextAccordingToWinner(winner);
+        StartCoroutine(DelayedEnd());
+    }
     #endregion
 
 
     #region private functions
 
+    private IEnumerator DelayedEnd()
+    {
+        yield return new WaitForSeconds(2f);
+        CanvasManager.Instance.SwitchState(CanvasType.EndGame);
+    }
 
+    private void SetEndGameTextAccordingToWinner(Filiation winner)
+    {
+
+        var endGameController = CanvasManager.Instance.GetControllerWithType(CanvasType.EndGame)
+                                        .GetComponent<EndGameCanvasController>();
+
+        if (endGameController == null)
+        {
+            Debug.LogError("[GameManager] endGameController not found");
+            return;
+        }
+
+        endGameController.SetEndGameTextAccordingToWinner(winner);
+        
+    }
 
     #endregion
     

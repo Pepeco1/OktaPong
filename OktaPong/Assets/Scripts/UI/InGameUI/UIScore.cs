@@ -42,6 +42,16 @@ public class UIScore : MonoBehaviour
     {
         currentScore++;
         text.SetText(currentScore.ToString());
+
+        CheckForEndGame();
+    }
+
+    private void CheckForEndGame()
+    {
+        if(currentScore >= GameManager.Instance.PointsToWinGame)
+        {
+            GameManager.Instance.DoEndGame(this.filiation);
+        }
     }
 
     #region Events
