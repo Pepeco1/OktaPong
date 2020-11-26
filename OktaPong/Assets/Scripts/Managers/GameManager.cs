@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : SingletonMono<GameManager>
 {
 
-    Dictionary<ShipFiliation, Ship> shipsInGame = null;
+    List<Ship> shipsInGame = null;
 
     public UnityAction<ShipFiliation> onShipDeath = null;
 
@@ -15,7 +15,7 @@ public class GameManager : SingletonMono<GameManager>
     #region Unity Functions
     private void Awake()
     {
-        shipsInGame = FindObjectsOfType<Ship>().ToDictionary(ship => ship.Filiation , ship => ship);
+        shipsInGame = FindObjectsOfType<Ship>().ToList();
     }
 
     private void OnEnable()
@@ -45,7 +45,7 @@ public class GameManager : SingletonMono<GameManager>
     
     private void SubscribeToEvents()
     {
-        foreach (var ship in shipsInGame.Values)
+        foreach (var ship in shipsInGame)
         {
             ship.onDeath += Ship_OnDeath;
         }
@@ -53,7 +53,7 @@ public class GameManager : SingletonMono<GameManager>
 
     private void UnsubscribeToEvents()
     {
-        foreach (var ship in shipsInGame.Values)
+        foreach (var ship in shipsInGame)
         {
             ship.onDeath -= Ship_OnDeath;
         }
