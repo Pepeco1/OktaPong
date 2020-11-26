@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,8 +12,9 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
     public Filiation Filiation { get => filiation; }
     public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
     public UnityAction OnHit { get => onHit; set => onHit = value; }
+
     public UnityAction OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
-    public UnityAction OnDeath { get => onDeath; set => onDeath = value; }
+    public UnityAction<Ship> OnDeath { get => onDeath; set => onDeath = value; }
     public UnityAction<Filiation> OnScoreTrigger { get; set; }
 
     //Atributes
@@ -28,7 +30,7 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
     private UnityAction onShoot = null;
     private UnityAction onHit = null;
     private UnityAction onKilledEnemy = null;
-    private UnityAction onDeath = null;
+    private UnityAction<Ship> onDeath = null;
 
 
     #region Unity Functions
@@ -98,7 +100,9 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         if (input.ShootInput == true)
         {
             ShootAllGuns();
+            input.TriggerTurnChangeEvent();
         }
+
     }
 
     private void ShootAllGuns()
@@ -160,7 +164,7 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
 
     private void Health_OnDeath()
     {
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(this);
     }
 
     private void Projectile_OnDealDamage()

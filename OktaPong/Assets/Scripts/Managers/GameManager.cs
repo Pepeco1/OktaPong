@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,25 +7,38 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMono<GameManager>
 {
-    public UnityAction<Filiation> OnShipDeath { get => onUpdateScoreEvent; set => onUpdateScoreEvent = value; }
+    public UnityAction<Filiation> OnShipDeath { get => onShipDead; set => onShipDead = value; }
 
+
+    //Atributes
+    //Members
+    private List<Ship> shipLists = null;
     
     //Events
-    private UnityAction<Filiation> onUpdateScoreEvent = null;
+    private UnityAction<Filiation> onShipDead = null;
 
     #region Unity Functions
 
+    private void Awake()
+    {
+
+        shipLists = FindObjectsOfType<Ship>().ToList();
+
+    }
+
     private void OnEnable()
     {
-        //SubscribeToEvents();
+        SubscribeToEvents();
     }
 
     private void OnDisable()
     {
-        //UnsubscribeToEvents();
+        UnSubscribeToEvents();
     }
 
     #endregion
+
+    #region public functions
 
     public void LoadScene(string sceneName)
     {
@@ -36,13 +50,33 @@ public class GameManager : SingletonMono<GameManager>
         Application.Quit();
     }
 
+    #endregion
 
-    #region Events related functions
+
+    #region private functions
+
+
+
+    #endregion
     
+    #region Events related functions
 
-    private void Ship_OnDeath(Filiation filiation)
+    private void SubscribeToEvents()
     {
-        OnShipDeath?.Invoke(filiation);
+        shipLists.ForEach(ship => ship.OnDeath += Ship_OnDeath);
+    }
+
+    private void UnSubscribeToEvents()
+    {
+        shipLists.ForEach(ship => ship.OnDeath -= Ship_OnDeath);
+    }
+
+    private void Ship_OnDeath(Ship ship)
+    {
+        //OnShipDeath?.Invoke(filiation);
+        TurnManager.Instance.ChangeTurnToThis(-1);
+        SpawnManager.Instance.ShipDeath(ship);
+
     }
 
     #endregion

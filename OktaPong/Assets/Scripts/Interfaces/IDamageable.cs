@@ -6,6 +6,5 @@ public interface IDamageable : IHaveHealth
     bool TakeDamage(int amount);
     void Heal(int amount);
 
-    UnityAction OnDeath { get ; set; }
 
 }

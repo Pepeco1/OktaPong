@@ -14,6 +14,7 @@ public class Projectile : MovableObjectMono
 
     //Atributes
     [SerializeField] private int projectileDamage = 10;
+    [SerializeField] private float programmedDeath = 1.5f;
     private int damageMultiplayer = 1;
 
     //Members
@@ -64,7 +65,7 @@ public class Projectile : MovableObjectMono
 
     private IEnumerator ProgrammedDeath()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(programmedDeath);
         projectilePool.ReturnToPool(this);
     }
 

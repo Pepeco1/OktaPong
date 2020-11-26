@@ -31,4 +31,14 @@ public abstract class InputProvider : MonoBehaviour
     {
         onTurnChangeEvent?.Invoke();
     }
+
+    public void DelayedTriggerChangeEvent()
+    {
+      //  StartCoroutine(DelayedTrigger);
+    }
+
+    private void DelayedTrigger()
+    {
+
+    }
 }
