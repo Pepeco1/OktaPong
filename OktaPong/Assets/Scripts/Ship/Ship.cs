@@ -11,7 +11,6 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
     public InputProvider InputProvider { get => input; }
     public Filiation Filiation { get => filiation; }
     public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
-    public UnityAction OnHit { get => onHit; set => onHit = value; }
 
     public UnityAction OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
     public UnityAction<Ship> OnDeath { get => onDeath; set => onDeath = value; }
@@ -162,7 +161,6 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
 
     public void SubscribeToProjectile(Projectile projectile)
     {
-        projectile.OnDealDamage += Projectile_OnDealDamage;
         projectile.OnKilledEnemy += Projectile_OnKillEnemy;
     }
 
@@ -174,11 +172,6 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
     private void Health_OnDeath()
     {
         OnDeath?.Invoke(this);
-    }
-
-    private void Projectile_OnDealDamage()
-    {
-        OnHit?.Invoke();
     }
 
     private void Projectile_OnKillEnemy()

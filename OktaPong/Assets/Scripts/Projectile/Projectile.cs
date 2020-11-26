@@ -11,7 +11,6 @@ public class Projectile : MovableObjectMono
 
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
     public UnityAction OnCollide { get => onCollide; set => onCollide = value; }
-    public UnityAction OnDealDamage { get => onDealDamage; set => onDealDamage = value; }
     public UnityAction OnKilledEnemy { get => onKill; set => onKill = value; }
 
 
@@ -26,7 +25,6 @@ public class Projectile : MovableObjectMono
 
     //Events
     private UnityAction onCollide = null;
-    private UnityAction onDealDamage = null;
     private UnityAction onKill = null;
 
     #region Unity functions
@@ -82,7 +80,6 @@ public class Projectile : MovableObjectMono
     private void ResetProjectile()
     {
         onCollide = null;
-        onDealDamage = null;
         onKill = null;
 
         transform.localScale = new Vector3(1, 1, 1);
@@ -132,8 +129,6 @@ public class Projectile : MovableObjectMono
         {
             onKill?.Invoke();
         }
-
-        onDealDamage?.Invoke();
 
         ResetProjectile();
         projectilePool.ReturnToPool(this);
