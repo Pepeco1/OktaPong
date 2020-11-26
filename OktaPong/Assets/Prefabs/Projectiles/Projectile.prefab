@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1274429332192064062}
   - component: {fileID: 1274429332192064061}
   - component: {fileID: 1274429332192064063}
+  - component: {fileID: -6201836148474609494}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -63,6 +64,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   rotationVelocity: 100
+  projectileDamage: 10
+  programmedDeath: 1.5
+  bounciness: 1
+--- !u!114 &-6201836148474609494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274429332192064060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 411be02e45bb2c94b9762b5746684f48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitParticle: {fileID: 4875283024049436719, guid: 841c68855d5f7064fa6f44719c427a13,
+    type: 3}
 --- !u!1 &1274429332413870726
 GameObject:
   m_ObjectHideFlags: 0

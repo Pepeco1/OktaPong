@@ -5,17 +5,21 @@ using UnityEngine.Events;
 public class Projectile : MovableObjectMono
 {
     
+    public int Damage { get => projectileDamage;}
+    public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
+    public float Bounciness { get => bounciness; set => bounciness = value; }
+
     public ProjectilePool ProjectilePool { set => projectilePool = value; }
     public UnityAction OnCollide { get => onCollide; set => onCollide = value; }
     public UnityAction OnDealDamage { get => onDealDamage; set => onDealDamage = value; }
     public UnityAction OnKilledEnemy { get => onKill; set => onKill = value; }
 
 
-
     //Atributes
     [SerializeField] private int projectileDamage = 10;
     [SerializeField] private float programmedDeath = 1.5f;
-    private int damageMultiplayer = 1;
+    [SerializeField] private float bounciness = 1f;
+    private float damageMultiplier = 1f;
 
     //Members
     private ProjectilePool projectilePool = null;
@@ -72,13 +76,17 @@ public class Projectile : MovableObjectMono
     {
         var newDirection = Vector2.Reflect(transform.right, collisionNormal);
         transform.right = newDirection;
+        MaxSpeed = MaxSpeed * bounciness;
     }
 
-    private void ClearEvents()
+    private void ResetProjectile()
     {
         onCollide = null;
         onDealDamage = null;
         onKill = null;
+
+        transform.localScale = new Vector3(1, 1, 1);
+
     }
 
     #endregion
@@ -99,6 +107,8 @@ public class Projectile : MovableObjectMono
         if (otherCollider == null)
             return;
 
+        OnCollide?.Invoke();
+
         var hits = new RaycastHit2D[1];
         var dir = (Vector3) otherCollider.ClosestPoint(transform.position) - transform.position;
         collider.Raycast(dir, hits, MaxSpeed * Time.fixedDeltaTime * 4f);
@@ -116,7 +126,7 @@ public class Projectile : MovableObjectMono
         if (damageable == null)
             return;
 
-        bool killed = damageable.TakeDamage(projectileDamage * damageMultiplayer);
+        bool killed = damageable.TakeDamage(Mathf.FloorToInt(projectileDamage * damageMultiplier));
 
         if (killed)
         {
@@ -125,7 +135,7 @@ public class Projectile : MovableObjectMono
 
         onDealDamage?.Invoke();
 
-        ClearEvents();
+        ResetProjectile();
         projectilePool.ReturnToPool(this);
     }
 
