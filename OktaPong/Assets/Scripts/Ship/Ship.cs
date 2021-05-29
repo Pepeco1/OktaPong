@@ -6,35 +6,34 @@ using UnityEngine.Events;
 
 public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, IScoreTrigger
 {
+
     public Health Health { get => health; set => health = value; }
     public bool Permission { get => input.Permission; set => input.Permission = value; }
     public InputProvider InputProvider { get => input; }
     public Filiation Filiation { get => filiation; }
-    public UnityAction OnShoot { get => onShoot; set => onShoot = value; }
+    public override float RotationAmount => base.RotationAmount * -input.HorizontalInput;
 
-    public UnityAction OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
-    public UnityAction<Ship> OnDeath { get => onDeath; set => onDeath = value; }
-    public UnityAction<Filiation> OnScoreTrigger { get; set; }
+    public Action OnShoot { get => onShoot; set => onShoot = value; }
+    public Action OnKilledEnemy { get => onKilledEnemy; set => onKilledEnemy = value; }
+    public Action<Ship> OnDeath { get => onDeath; set => onDeath = value; }
+    public Action<Filiation> OnScoreTrigger { get; set; }
 
     //Atributes
     [SerializeField] private Filiation filiation = Filiation.Player1;
-
-    //Members
     [SerializeField] private ProjectilePool projectilePool = null;
     private List<Gun> gunList = null;
     private InputProvider input = null;
     private Health health = null;
 
     // Events
-    private UnityAction onShoot = null;
-    private UnityAction onHit = null;
-    private UnityAction onKilledEnemy = null;
-    private UnityAction<Ship> onDeath = null;
+    private Action onShoot = null;
+    private Action onKilledEnemy = null;
+    private Action<Ship> onDeath = null;
 
 
     #region Unity Functions
 
-    private new void Awake()
+    protected override void Awake()
     {
         base.Awake();
 
@@ -45,8 +44,6 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         InjectDependenciesInGuns();
     }
 
-
-    // Update is called once per frame
     void Update()
     {
         if (!Permission)
@@ -70,6 +67,7 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
     #endregion
 
     #region public methods
+
     public bool TakeDamage(int amount)
     {
         return Health.TakeDamage(amount);
@@ -82,9 +80,11 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         Health.Heal(amount);
         //Spawn particles
     }
+
     #endregion
 
-    #region private functions
+    #region private methods
+
     private void InjectDependenciesInGuns()
     {
         gunList.ForEach(gun => InjectMembers(gun));
@@ -127,13 +127,13 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
             return true;
         }
 
-        Debug.Log(hits[0].collider?.gameObject.name);
         return false;
     }
 
     #endregion
 
     #region override methods
+
     protected override void Move()
     {
         if (input.VerticalInput != 0)
@@ -150,13 +150,6 @@ public class Ship : MovableObjectMono, IDamageable, IShooter, IInputControlled, 
         }
     }
 
-    protected override void Rotate()
-    {
-        if (input.HorizontalInput != 0)
-        {
-            transform.Rotate(new Vector3(0, 0, -input.HorizontalInput * RotationVelocity * Time.deltaTime));
-        }
-    }
     #endregion
 
     #region Events

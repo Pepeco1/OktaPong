@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMono<GameManager>
 {
-    public UnityAction<Filiation> OnShipDeath { get => onShipDead; set => onShipDead = value; }
+    public Action<Filiation> OnShipDeath { get => onShipDead; set => onShipDead = value; }
     public int PointsToWinGame { get => pointsToWinGame; set => pointsToWinGame = value; }
 
     //Atributes
@@ -17,7 +18,7 @@ public class GameManager : SingletonMono<GameManager>
     private List<Ship> shipLists = null;
 
     //Events
-    private UnityAction<Filiation> onShipDead = null;
+    private Action<Filiation> onShipDead = null;
 
     #region Unity Functions
 
@@ -62,7 +63,6 @@ public class GameManager : SingletonMono<GameManager>
         StartCoroutine(DelayedEnd());
     }
     #endregion
-
 
     #region private functions
 

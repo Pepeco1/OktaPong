@@ -23,7 +23,7 @@ public abstract class InputProvider : MonoBehaviour
     protected bool shootInput = false;
 
     //Events
-    public UnityAction onTurnChangeEvent = null;
+    public Action onTurnChangeEvent = null;
 
     public abstract void OnMove(InputValue value);
     public abstract void OnShoot(InputValue value);
@@ -32,13 +32,4 @@ public abstract class InputProvider : MonoBehaviour
         onTurnChangeEvent?.Invoke();
     }
 
-    public void DelayedTriggerChangeEvent()
-    {
-      //  StartCoroutine(DelayedTrigger);
-    }
-
-    private void DelayedTrigger()
-    {
-
-    }
 }

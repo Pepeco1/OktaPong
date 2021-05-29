@@ -55,7 +55,6 @@ public class TurnManager : SingletonMono<TurnManager>
 
     }
 
-
     public void NextTurn()
     { 
         //Change to next Turn
@@ -63,8 +62,8 @@ public class TurnManager : SingletonMono<TurnManager>
         onTurnChange?.Invoke();
     }
 
-
     #region Events Functions
+
     private void InputProvider_OnTurnChangeEvent()
     {
         NextTurn();
@@ -79,6 +78,7 @@ public class TurnManager : SingletonMono<TurnManager>
     {
         gameParticipants.ForEach(participant => participant.onTurnChangeEvent -= InputProvider_OnTurnChangeEvent);
     }
+
     #endregion
 
 }

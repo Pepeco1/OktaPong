@@ -1,9 +1,10 @@
-﻿using UnityEngine.Events;
+﻿using System;
+using UnityEngine.Events;
 
 public interface IShooter
 {
-    UnityAction OnKilledEnemy { get; set; }
-    UnityAction OnShoot { get; set; }
+    Action OnKilledEnemy { get; set; }
+    Action OnShoot { get; set; }
 
     void SubscribeToProjectile(Projectile projectile);
 }
