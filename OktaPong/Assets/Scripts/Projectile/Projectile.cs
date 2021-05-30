@@ -6,11 +6,11 @@ using UnityEngine.Events;
 public class Projectile : MovableObjectMono
 {
     
-    public int Damage { get => projectileDamage;}
+    public int Damage { get => projectileDamage; set => projectileDamage = value; }
     public float DamageMultiplier { get => damageMultiplier; set => damageMultiplier = value; }
     public float Bounciness { get => bounciness; set => bounciness = value; }
 
-    public ProjectilePool ProjectilePool { set => projectilePool = value; }
+    public ProjectilePool ProjectilePool { get => projectilePool; set => projectilePool = value; }
     public Action OnCollide { get => onCollide; set => onCollide = value; }
     public Action OnKilledEnemy { get => onKill; set => onKill = value; }
 
